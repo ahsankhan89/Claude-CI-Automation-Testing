@@ -1,0 +1,24 @@
+name: markdown-only
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  markdown-only:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Fail if any changed file is not markdown
+        run: |
+          git diff --name-only --diff-filter=ACMR \
+            "origin/${{ github.base_ref }}...HEAD" > changed.txt
+          bad=$(grep -v -E '\.md$|^\.github/workflows/' changed.txt || true)
+          if [ -n "$bad" ]; then
+            echo "These files are not markdown (.md):"
+            echo "$bad"
+            exit 1
+          fi
+          echo "All changed files are markdown."

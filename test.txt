@@ -1,0 +1,2 @@
+This is a test text file.
+It is not markdown, so the markdown-only check should reject it.
